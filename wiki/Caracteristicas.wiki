@@ -1,0 +1,13 @@
+#summary Caracteristicas de la aplicación
+
+= Introducción =
+
+Notexpress es una aplicación innovadora que nos permitirá manejar nuestra información. Apuntes, eventos, citas, cumpleaños.
+
+
+= Detalles =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
