@@ -29,4 +29,7 @@ public class EstrategiaTexto implements EstrategiaDibujo {
     public void setTexto(String nuevoTexto) {
       Texto = nuevoTexto;
     }
+
+    public void borrarDatos() {
+    }
 }

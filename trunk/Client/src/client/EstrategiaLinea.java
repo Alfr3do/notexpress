@@ -36,4 +36,7 @@ public class EstrategiaLinea implements EstrategiaDibujo {
         tmp.add(segundo);
         return tmp;
     }
+
+    public void borrarDatos() {
+    }
 }
