@@ -50,4 +50,7 @@ public class EstrategiaCuadrado implements EstrategiaDibujo {
         tmp.add(primero);
         return tmp;
     }
+
+    public void borrarDatos() {
+    }
 }
