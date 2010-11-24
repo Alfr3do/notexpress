@@ -63,7 +63,9 @@ import model.Lienzo;
 public class Principal extends Debug implements GLEventListener, MouseListener, MouseMotionListener,
                                           MouseWheelListener
 {
-    //donde estan los comentarios de ahorita?
+    //
+    
+    Lienzo lienzoActual;
     JPanel panelDibujo;
     Container contenedor;
     transient Toolkit kit;
@@ -147,7 +149,7 @@ public Principal()
 
   
   public boolean pintarLienzo(Lienzo lienzo) {
-
+    this.lienzoActual = lienzo;
     datos.clear();
      
     for (int i =0; i<lienzo.getDatos().size();i++) {
@@ -162,12 +164,12 @@ public Principal()
     public boolean pintarLienzo(int id) {
         try {
             LienzoDAO lDAO = new LienzoDAO();
-            Lienzo xx = lDAO.buscarPorId(id);
+            this.lienzoActual = lDAO.buscarPorId(id);
             datos.clear();
 
-            for (int i = 0; i < xx.getDatos().size(); i++) {
-                datos.add(new Point(xx.getDatos().get(i).getX(),
-                                    xx.getDatos().get(i).getY()));
+            for (int i = 0; i < this.lienzoActual.getDatos().size(); i++) {
+                datos.add(new Point(this.lienzoActual.getDatos().get(i).getX(),
+                                    this.lienzoActual.getDatos().get(i).getY()));
             }
 
             canvas.repaint();
@@ -547,13 +549,25 @@ public static void main(String[] args)
 
   private void guardarLienzo(ActionEvent e) {
       LienzoDAO lDAO = new LienzoDAO();
-      Lienzo ll = new Lienzo();
+      if (this.lienzoActual != null) {
+        imprimir("no es null, guardando");
+        this.lienzoActual.clearDatos();
+        for (int i =0; i<datos.size();i++) {
+            this.lienzoActual.addPunto(new Dato(datos.get(i).x, datos.get(i).y));    
+        }
+        this.lienzoActual.setId_usuario(13);
+        this.lienzoActual.setNombre("Calendario nuevo");
+        lDAO.update(this.lienzoActual);
+        imprimir("Guardado lienzo: " + this.lienzoActual.getId());
+      }
+          
+    /*  Lienzo ll = new Lienzo();
       for (int i =0; i<datos.size();i++) {
           ll.addPunto(new Dato(datos.get(i).x, datos.get(i).y));    
-      }
-      ll.setNombre("Lienzo guardado");
-      ll.setId_usuario(13);
-      lDAO.save(ll);
+      }*/
+  /*    ll.setNombre("Lienzo guardado");
+      ll.setId_usuario(13);*/
+      
   }
   
   public void cargarNuevoLienzo(int id) {

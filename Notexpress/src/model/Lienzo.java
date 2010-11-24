@@ -18,29 +18,34 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 @Entity
-@NamedQueries({
-  @NamedQuery(name = "Lienzo.findAll", query = "select o from Lienzo o")
-})
+@NamedQueries( { @NamedQuery(name = "Lienzo.findAll",
+                             query = "select o from Lienzo o") })
 public class Lienzo implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY ) 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer id_usuario;
     private String nombre;
-    
+
     @OneToMany(mappedBy = "lienzo", cascade = CascadeType.PERSIST)
     private List<Dato> datos;
-    
 
+    public void clearDatos() {
+        if (datos == null)
+            datos = new ArrayList<Dato>();
+        else
+            datos.clear();
+    }
 
     public void addPunto(Dato punto) {
-      if (datos == null) {
-        datos = new ArrayList<Dato>();
-      }
-      punto.setLienzo(this);
-      datos.add(punto);
-      
+        if (datos == null) {
+            datos = new ArrayList<Dato>();
+        }
+        punto.setLienzo(this);
+        datos.add(punto);
+
     }
+
     public Lienzo() {
     }
 
