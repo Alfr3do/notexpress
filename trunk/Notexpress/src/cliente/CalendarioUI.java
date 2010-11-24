@@ -50,7 +50,9 @@ public class CalendarioUI extends JFrame {
     static DefaultTableModel mtblCalendario;
     static JScrollPane stblCalendario;
     static JPanel pnlCalendario;
-
+     
+    static CalendarioDAO cDAO = new CalendarioDAO();
+  
     static int hoyAnio, hoyMes, hoyDia, actualAnio, actualMes;
     static int mesVisible;
     static int anioVisible;
@@ -188,10 +190,6 @@ public class CalendarioUI extends JFrame {
         tblCalendario.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() == 2) {
-                        //Listener para doble click en las celdas de la tabla
-                        //Se busca si existe el evento en la bd ya
-                        //Si no existe se crea y luego se le dice a Principal que lo lea
-
                         JTable target = (JTable)e.getSource();
                         int row = target.getSelectedRow();
                         int column = target.getSelectedColumn();
@@ -200,7 +198,7 @@ public class CalendarioUI extends JFrame {
                         int mes = mesVisible;
                         int anio = anioVisible;
 
-                        CalendarioDAO cDAO = new CalendarioDAO();
+                        
                         Calendario cccc = cDAO.buscarPorFecha(dia, mes, anio);
                         if (cccc != null) {
                             //mostrar lienzo
@@ -328,6 +326,7 @@ public class CalendarioUI extends JFrame {
 
 
     static class tblCalendarioRenderer extends DefaultTableCellRenderer {
+        
         public Component getTableCellRendererComponent(JTable table,
                                                        Object value,
                                                        boolean selected,
@@ -335,10 +334,14 @@ public class CalendarioUI extends JFrame {
                                                        int row, int column) {
             super.getTableCellRendererComponent(table, value, selected,
                                                 focused, row, column);
+            
             if (column == 0 || column == 6) {
                 setBackground(new Color(220, 220, 220));
             } else {
                 setBackground(new Color(255, 255, 255));
+            }
+            if (value != null && cDAO.buscarPorFecha(Integer.parseInt(value.toString()), actualMes, actualAnio) != null) {
+              setBackground(new Color(255, 255, 102));
             }
             if (value != null) {
                 if (Integer.parseInt(value.toString()) == hoyDia &&
