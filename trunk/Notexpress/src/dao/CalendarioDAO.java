@@ -11,7 +11,10 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
+
+import javax.persistence.Query;
 
 import model.Calendario;
 import model.Dato;
@@ -25,39 +28,7 @@ public class CalendarioDAO {
 
     public static void main(String[] args) {
         
-        Calendario cDio = new Calendario();
-        Timestamp fecha = new java.sql.Timestamp((Calendar.getInstance()).getTime().getTime());
-        cDio.setFecha(fecha);
-        
-
-      Lienzo X = new Lienzo();
-      X.setId_usuario(1);
-      X.setNombre("nombreeee");
-      
-      
-      Dato punto = new Dato();
-      punto.setX(1);
-      punto.setY(2);
-      punto.setZ(0);
-      punto.setTexto("HOLA SI WNO");
-      
-      Dato punto2 = new Dato();
-      punto2.setX(10);
-      punto2.setY(21);
-      punto2.setZ(0);
-        
-        
-      X.addPunto(punto);
-      X.addPunto(punto2);
-         
-      
-      
-      LienzoDAO lDAO = new LienzoDAO();
-      lDAO.save(X);
-        
-      cDio.setId_lienzo(X.getId());
-      
-      (new CalendarioDAO()).save(cDio);
+    
             
     }
 
@@ -119,5 +90,33 @@ public class CalendarioDAO {
 
     }
 
+  public Calendario buscarPorFecha(int dia, int mes, int anio) {
+    boolean flag = true;
+
+    EntityManagerFactory emf =
+        Persistence.createEntityManagerFactory("ArqLabPU");
+    EntityManager em = emf.createEntityManager();
+    EntityTransaction trans = em.getTransaction();
+
+    trans.begin();
+
+    Query q = em.createQuery("Select U FROM Calendario U WHERE U.dia = :dia and U.mes = :mes and U.anio = :anio");
+    q.setParameter("dia", dia);
+    q.setParameter("anio", anio);
+    q.setParameter("mes", mes);
+    
+
+    trans.commit();
+
+    try {
+        Calendario cale = (Calendario) q.getSingleResult();
+        return cale;
+    }
+    catch (NoResultException e) {
+        return null;
+        }
+    
+  
+  }
 
 }

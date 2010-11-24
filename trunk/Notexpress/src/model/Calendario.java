@@ -22,9 +22,11 @@ public class Calendario implements Serializable {
     private Integer id;
 
     private Integer id_lienzo;
-    private Timestamp fecha;
+    private int dia;
+    private int mes;
+    private int anio;
     
-    public Calendario() {
+    public Calendario() {//creo que esto lo creo con el import? no, este es el modelo...bn
     }
 
     public Integer getId() {
@@ -44,11 +46,27 @@ public class Calendario implements Serializable {
     }
 
 
-    public void setFecha(Timestamp fecha) {
-        this.fecha = fecha;
+    public void setDia(int dia) {
+        this.dia = dia;
     }
 
-    public Timestamp getFecha() {
-        return fecha;
+    public int getDia() {
+        return dia;
+    }
+
+    public void setMes(int mes) {
+        this.mes = mes;
+    }
+
+    public int getMes() {
+        return mes;
+    }
+
+    public void setAnio(int anio) {
+        this.anio = anio;
+    }
+
+    public int getAnio() {
+        return anio;
     }
 }

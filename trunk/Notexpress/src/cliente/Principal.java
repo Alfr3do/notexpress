@@ -59,16 +59,23 @@ import javax.swing.event.MenuKeyListener;
 import model.Dato;
 import model.Lienzo;
 
-
+//esa vaina xq?
 public class Principal extends Debug implements GLEventListener, MouseListener, MouseMotionListener,
                                           MouseWheelListener
 {
+    //donde estan los comentarios de ahorita?
     JPanel panelDibujo;
     Container contenedor;
     transient Toolkit kit;
     Dimension dimensionPantalla;
     int altura;
     int anchura;
+    
+    // La clase se llama CalendarioUI porque hacia conflicto con el modelo del mismo nobmre
+    // quita el import
+    
+    public static Principal principalInstance = new Principal();
+    private static CalendarioUI calendarioInstance = new CalendarioUI();
 
     static GL2 gl;
 
@@ -79,7 +86,7 @@ public class Principal extends Debug implements GLEventListener, MouseListener, 
     private Boolean escribiendoTexto;
     private ArrayList<Point> temporal, datos;
     private ArrayList<Point> textosPos;
-  private ArrayList<String> textos;
+    private ArrayList<String> textos;
     
     
     //static CanvasMouseEvents canvas;
@@ -89,9 +96,6 @@ public class Principal extends Debug implements GLEventListener, MouseListener, 
     
     private JButton jButton1 = new JButton("",new ImageIcon("resources/lapiz.png"));
     private JButton jButton2 = new JButton("",new ImageIcon("resources/linea.png"));
-    
-    
-     
     private JButton jButton3 = new JButton("",new ImageIcon("resources/rectangulo.png"));
     private JButton jButton4 = new JButton("",new ImageIcon("resources/borrador.png"));
     private JButton jButton5 = new JButton("",new ImageIcon("resources/circulo.png"));
@@ -141,9 +145,51 @@ public Principal()
 }
 
 
+  
+  public boolean pintarLienzo(Lienzo lienzo) {
+
+    datos.clear();
+     
+    for (int i =0; i<lienzo.getDatos().size();i++) {
+        datos.add(new Point(lienzo.getDatos().get(i).getX(), lienzo.getDatos().get(i).getY()));    
+    }
+    
+    canvas.repaint();        
+    return true;
+  }
+
+
+    public boolean pintarLienzo(int id) {
+        try {
+            LienzoDAO lDAO = new LienzoDAO();
+            Lienzo xx = lDAO.buscarPorId(id);
+            datos.clear();
+
+            for (int i = 0; i < xx.getDatos().size(); i++) {
+                datos.add(new Point(xx.getDatos().get(i).getX(),
+                                    xx.getDatos().get(i).getY()));
+            }
+
+            canvas.repaint();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static void setPrincipalInstance(Principal principalInstance) {
+        Principal.principalInstance = principalInstance;
+    }
+
+    public static Principal getPrincipalInstance() {
+        return principalInstance;
+    }
+
+
 public static void main(String[] args)
 {
-    new Principal();
+   // new Principal();
+    principalInstance.setVisible(true);
 }
 
     public void init(GLAutoDrawable drawable)
@@ -274,7 +320,7 @@ public static void main(String[] args)
         dimensionPantalla = kit.getScreenSize();
         altura = (int)dimensionPantalla.getHeight();
         anchura = (int)dimensionPantalla.getWidth();
-
+        
         //debugin
         //altura = 500;
         //anchura = 400;
@@ -376,7 +422,9 @@ public static void main(String[] args)
       jButtonCalendario.setPreferredSize(new Dimension(35, 35));
       jButtonCalendario.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-              (new Calendario()).show();
+              //(new CalendarioUI()).show();
+              calendarioInstance.setVisible(true);
+             // dispose();
           }
             });       
       jButtonGuardar.setPreferredSize(new Dimension(35, 35));
@@ -447,7 +495,7 @@ public static void main(String[] args)
         controles.add(jButtonNuevo, null);
         controles.add(jButtonImprimir, null);
         controles.add(jButtonSalir, null);
-      controles.add(jButtonCalendario, null);
+        controles.add(jButtonCalendario, null);
         controles.add(textField);
         
         this.getContentPane().add(controles,null);
@@ -478,7 +526,7 @@ public static void main(String[] args)
         this.setLocation(0, 0);
         this.setResizable(false);
         this.setVisible(true);
-       
+        //this.setUndecorated(true); 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     
@@ -487,17 +535,13 @@ public static void main(String[] args)
         System.exit(0);
     }
     
-
+  
+    
   private void abrirLienzo(ActionEvent e) {
       LienzoDAO lDAO = new LienzoDAO();
       Lienzo  xx = lDAO.buscarPorOwner(13);
-      datos.clear();
-       
-      for (int i =0; i<xx.getDatos().size();i++) {
-          datos.add(new Point(xx.getDatos().get(i).getX(), xx.getDatos().get(i).getY()));    
-      }
-      
-      canvas.repaint();
+ 
+      this.pintarLienzo(xx);
       
   }
 
@@ -510,6 +554,13 @@ public static void main(String[] args)
       ll.setNombre("Lienzo guardado");
       ll.setId_usuario(13);
       lDAO.save(ll);
+  }
+  
+  public void cargarNuevoLienzo(int id) {
+    LienzoDAO lDAO = new LienzoDAO();
+    Lienzo  xx = lDAO.buscarPorId(id);
+    System.out.println("cargar el nuevo");
+    this.pintarLienzo(xx);
   }
     public void mouseDragged(MouseEvent e) {
         //imprimir("mouse dragged");
@@ -537,6 +588,8 @@ public static void main(String[] args)
 
     public void mouseMoved(MouseEvent e) {
         //imprimir("mouse moved");
+        //aprovechemos este que pasa todo el tiempo
+    
     }
     
     public void mouseClicked(MouseEvent e) {
